@@ -1,0 +1,40 @@
+<!-- templates/delete_lesson.html -->
+{% extends "base_card.html" %}
+{% load static %}
+
+{% block title %}Cancel Lesson with {{ object.tutor.user.get_full_name }}{% endblock %}
+
+{% block header_content %}
+    <h1>Cancel Lesson with {{ object.tutor.user.get_full_name }}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <p>Are you sure you want to cancel this lesson?</p>
+    <form id="deleteLessonForm" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Cancel Lesson</button>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#deleteLessonForm').on('submit', function(event){
+        event.preventDefault();
+        var $form = $(this);
+        $.ajax({
+            type: 'POST',
+            url: $form.attr('action'),
+            data: $form.serialize(),
+            success: function(response){
+                window.location.href = "{% url 'lessons_list' %}";
+            },
+            error: function(response){
+                $('#form-messages').html('<p class="text-danger">There was an error cancelling the lesson.</p>');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

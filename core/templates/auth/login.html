@@ -1,0 +1,73 @@
+<!-- core/templates/registration/login.html -->
+{% extends 'core/../base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<style>
+    .login-page {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: inherit;
+        margin: 0;
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        width: 100%;
+        max-width: 600px;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .card-body {
+        padding: 40px;
+    }
+    .card-body h1 {
+        font-size: 2.5em;
+        font-weight: 700;
+    }
+    .card-body p.lead {
+        font-size: 1.2em;
+    }
+    .card-body hr {
+        margin: 30px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="card">
+        <div class="card-body text-center">
+            <h1 class="display-4"><i class="bi bi-box-arrow-in-right"></i> Login</h1>
+            <p class="lead">Please enter your credentials to log in.</p>
+            <hr class="my-4">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

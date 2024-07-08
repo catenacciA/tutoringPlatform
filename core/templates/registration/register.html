@@ -1,0 +1,14 @@
+<!-- core/templates/core/register.html -->
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h1>Register</h1>
+<form method="POST">
+    {% csrf_token %}
+    {% crispy form %}
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+{% endblock %}

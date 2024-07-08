@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Lesson</title>
+</head>
+<body>
+    <h1>Book Lesson with {{ tutor.user.username }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Book</button>
+    </form>
+</body>
+</html>

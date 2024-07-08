@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <style>
+        .edit-profile-page {
+            padding-top: 70px; /* Ensure it doesn't overlap with the fixed navbar */
+        }
+        .profile-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white background */
+            margin-bottom: 20px;
+        }
+        .profile-card .card-header {
+            background-color: #007bff;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .profile-card .card-body {
+            padding: 20px;
+        }
+        .profile-card .card-footer {
+            background-color: #f8f9fa;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        .profile-pic img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .btn-secondary {
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container edit-profile-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Profile Image Section -->
+            <div class="card profile-card shadow-lg rounded">
+                <div class="card-header">
+                    <h5>Profile Image</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="profile-pic">
+                        <img id="profile-pic" src="{% static user.profile.propic %}" alt="Profile Picture">
+                    </div>
+                    <form id="profile-pic-form" method="POST" enctype="multipart/form-data" class="d-inline">
+                        {% csrf_token %}
+                        <input type="file" name="propic" id="propic-input" accept="image/*" class="d-none">
+                        <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('propic-input').click();">Change Picture</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Profile Banner Section -->
+            <div class="card profile-card shadow-lg rounded">
+                <div class="card-header">
+                    <h5>Profile Banner</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="profile-banner mb-3">
+                        <img src="{% static 'core/images/banner.jpg' %}" class="img-fluid rounded" alt="Profile Banner">
+                    </div>
+                    <form method="POST" enctype="multipart/form-data" class="d-inline">
+                        {% csrf_token %}
+                        <input type="file" name="banner" id="banner-input" accept="image/*" class="d-none">
+                        <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('banner-input').click();">Change Banner</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Profile Information Section -->
+            <div class="card profile-card shadow-lg rounded">
+                <div class="card-header">
+                    <h5>Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.as_p }}
+                        </div>
+                        <div class="mb-3">
+                            {{ profile_form.as_p }}
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'core:profile' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profile-pic-input').onchange = function() {
+        document.getElementById('profile-pic-form').submit();
+    };
+</script>
+{% endblock %}

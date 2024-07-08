@@ -1,0 +1,133 @@
+<!-- core/templates/profile.html -->
+{% extends 'core/../base.html' %}
+{% load static %}
+
+{% block title %}Profile Settings{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<style>
+    .profile-page {
+        padding: 20px;
+        background: inherit;
+    }
+    .profile-content {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        width: 100%;
+    }
+    .nav-tabs .nav-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+    .nav-tabs .nav-link {
+        border: none;
+        border-radius: 0;
+        color: #007bff;
+    }
+    .profile-pic img {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+    }
+    .profile-section {
+        margin-bottom: 20px;
+    }
+    .profile-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .profile-header h1 {
+        font-size: 2.5em;
+        font-weight: 700;
+    }
+    .profile-header hr {
+        margin: 20px auto;
+        width: 50%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid profile-page">
+    <div class="profile-content">
+        <div class="profile-header">
+            <h1 class="display-4"><i class="bi bi-person"></i> Profile Settings</h1>
+            <hr class="my-4">
+        </div>
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">Profile</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">Account</button>
+            </li>
+            {% if user.profile.is_tutor %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tutor-tab" data-bs-toggle="tab" data-bs-target="#tutor" type="button" role="tab" aria-controls="tutor" aria-selected="false">Tutor</button>
+            </li>
+            {% endif %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Settings</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="profileTabsContent">
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="profile-section text-center">
+                    <div class="profile-pic mb-3">
+                        {% if user.profile.propic %}
+                            <img id="profile-pic" src="{{ user.profile.propic.url }}" alt="Profile Picture">
+                        {% else %}
+                            <img id="profile-pic" src="{% static 'unknown_user.png' %}" alt="Unknown User">
+                        {% endif %}
+                    </div>
+                    <h5>{{ user.get_full_name }}</h5>
+                    <p>{{ user.email }}</p>
+                </div>
+                <div class="profile-section">
+                    <h5>Birth Date</h5>
+                    <p>{{ user.profile.birth_date }}</p>
+                    <h5>Gender</h5>
+                    <p>{{ user.profile.get_gender_display }}</p>
+                    <h5>Location</h5>
+                    <p>{{ user.profile.location }}</p>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
+                <div class="profile-section">
+                    <h5>Username</h5>
+                    <p>{{ user.username }}</p>
+                    <h5>Email</h5>
+                    <p>{{ user.email }}</p>
+                </div>
+            </div>
+            {% if user.profile.is_tutor %}
+            <div class="tab-pane fade" id="tutor" role="tabpanel" aria-labelledby="tutor-tab">
+                <div class="profile-section">
+                    <h5>Current Position</h5>
+                    <p>{{ user.tutor.current_position }}</p>
+                    <h5>Educational Background</h5>
+                    <p>{{ user.tutor.educational_background }}</p>
+                    <h5>Courses Taught</h5>
+                    <p>{{ user.tutor.courses_taught }}</p>
+                    <h5>Offers</h5>
+                    <p>{{ user.tutor.offers }}</p>
+                </div>
+            </div>
+            {% endif %}
+            <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                <div class="profile-section">
+                    <h5>Settings</h5>
+                    <p>Additional settings can be configured here.</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a class="btn btn-primary btn-lg" href="{% url 'core:edit_profile' %}" role="button">Edit Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
