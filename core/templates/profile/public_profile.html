@@ -1,0 +1,195 @@
+<!-- core/templates/public_profile.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Public Profile{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="{% static 'core/css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container profile-page">
+    <div class="profile-content">
+        <div class="profile-header">
+            <h1 class="display-4"><i class="bi bi-person-circle"></i> Public Profile</h1>
+            <hr class="my-4">
+        </div>
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">Profile</button>
+            </li>
+            {% if tutor %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tutor-tab" data-bs-toggle="tab" data-bs-target="#tutor" type="button" role="tab" aria-controls="tutor" aria-selected="false">Tutor</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
+            </li>
+            {% endif %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="lessons-tab" data-bs-toggle="tab" data-bs-target="#lessons" type="button" role="tab" aria-controls="lessons" aria-selected="false">Lessons</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="profileTabsContent">
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="profile-section text-center">
+                    <div class="profile-pic mb-3">
+                        {% if tutor and profile_user.tutor.profile_picture %}
+                            <img id="profile-pic" src="{{ profile_user.tutor.profile_picture.url }}" alt="Profile Picture">
+                        {% elif profile_user.profile.propic %}
+                            <img id="profile-pic" src="{{ profile_user.profile.propic.url }}" alt="Profile Picture">
+                        {% else %}
+                            <img id="profile-pic" src="{% static 'unknown_user.png' %}" alt="Unknown User">
+                        {% endif %}
+                    </div>
+                    <h5>{{ profile_user.get_full_name }}</h5>
+                    <p>{{ profile_user.email }}</p>
+                </div>
+                <div class="profile-info">
+                    <h5><i class="bi bi-calendar"></i> Birth Date</h5>
+                    <p>{{ profile_user.profile.birth_date }}</p>
+                    <h5><i class="bi bi-gender-ambiguous"></i> Gender</h5>
+                    <p>{{ profile_user.profile.get_gender_display }}</p>
+                    <h5><i class="bi bi-geo-alt"></i> Location</h5>
+                    <p>{{ profile_user.profile.location }}</p>
+                    <h5><i class="bi bi-house"></i> Address</h5>
+                    <p>{{ profile_user.profile.address }}</p>
+                    <h5><i class="bi bi-telephone"></i> Phone</h5>
+                    <p>{{ profile_user.profile.phone }}</p>
+                </div>
+            </div>
+            {% if tutor %}
+            <div class="tab-pane fade" id="tutor" role="tabpanel" aria-labelledby="tutor-tab">
+                <div class="profile-info">
+                    <h5><i class="bi bi-book"></i> Subjects</h5>
+                    <ul>
+                        {% for subject in profile_user.tutor.subjects.all %}
+                            <li>{{ subject.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h5><i class="bi bi-currency-dollar"></i> Hourly Rate</h5>
+                    <p>${{ profile_user.tutor.hourly_rate }}</p>
+                    <h5><i class="bi bi-mortarboard"></i> Qualifications</h5>
+                    <p>{{ profile_user.tutor.qualifications }}</p>
+                    <h5><i class="bi bi-briefcase"></i> Experience</h5>
+                    <p>{{ profile_user.tutor.experience }} years</p>
+                    <h5><i class="bi bi-calendar-check"></i> Availability</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Day of Week</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for availability in profile_user.tutor.availabilities.all %}
+                            <tr>
+                                <td>{{ availability.day_of_week }}</td>
+                                <td>{{ availability.start_time }}</td>
+                                <td>{{ availability.end_time }}</td>
+                                <td>{{ availability.is_available|yesno:"Yes,No" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                <div class="profile-info">
+                    <h5><i class="bi bi-star"></i> Total Review Score</h5>
+                    <p>{{ total_review_score|default:"No reviews yet" }}</p>
+                    <h5><i class="bi bi-chat-left-text"></i> Reviews</h5>
+                    <ul>
+                        {% for review in reviews %}
+                            <li>
+                                <strong>{{ review.student.user.get_full_name }}</strong> rated {{ review.rating }} stars
+                                <br>
+                                <em>{{ review.comment }}</em>
+                                <br>
+                                <small>Lesson of {{ review.lesson.subject.name }}</small>
+                                {% if review.response %}
+                                    <br>
+                                    <strong>Tutor's response:</strong> <em>{{ review.response }}</em>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            <div class="tab-pane fade" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
+                <div class="profile-info">
+                    <h5><i class="bi bi-journal-bookmark"></i> Lessons</h5>
+                    {% if tutor_lessons %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Lesson Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Student</th>
+                                <th>Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lesson in tutor_lessons %}
+                            <tr>
+                                <td>{{ lesson.booking_date }}</td>
+                                <td>{{ lesson.start_time }}</td>
+                                <td>{{ lesson.end_time }}</td>
+                                <td>{{ lesson.student.get_full_name }}</td>
+                                <td>{{ lesson.subject }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% elif lessons %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Lesson Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Tutor</th>
+                                <th>Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lesson in lessons %}
+                            <tr>
+                                <td>{{ lesson.booking_date }}</td>
+                                <td>{{ lesson.start_time }}</td>
+                                <td>{{ lesson.end_time }}</td>
+                                <td>{{ lesson.tutor.get_full_name }}</td>
+                                <td>{{ lesson.subject }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>No lessons available.</p>
+                    {% endif %}
+                    {% if tutor %}
+                    <div class="text-center mt-4">
+                        {% if not is_tutor %}
+                        <a href="{% url 'core:book_lesson' tutor.id %}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-envelope-fill"></i> Contact
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary btn-lg" disabled>
+                            <i class="bi bi-envelope-fill"></i> Contact
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

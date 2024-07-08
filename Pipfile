@@ -33,6 +33,12 @@ twisted = "==24.3.0"
 txaio = "==23.1.1"
 typing-extensions = "==4.12.2"
 "zope.interface" = "==6.4.post2"
+certifi = "==2024.7.4"
+charset-normalizer = "==3.3.2"
+python-decouple = "==3.8"
+pytz = "==2024.1"
+requests = "==2.32.3"
+urllib3 = "==2.2.2"
 
 [dev-packages]
 

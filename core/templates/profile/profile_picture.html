@@ -1,0 +1,8 @@
+{% load static %}
+{% if user.profile.is_tutor and user.tutor.profile_picture %}
+    <img id="profile-pic" src="{{ user.tutor.profile_picture.url }}" alt="Profile Picture" onclick="document.getElementById('propic-input').click();">
+{% elif user.profile.propic %}
+    <img id="profile-pic" src="{{ user.profile.propic.url }}" alt="Profile Picture" onclick="document.getElementById('propic-input').click();">
+{% else %}
+    <img id="profile-pic" src="{% static 'unknown_user.png' %}" alt="Unknown User" onclick="document.getElementById('propic-input').click();">
+{% endif %}

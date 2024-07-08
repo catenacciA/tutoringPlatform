@@ -1,0 +1,41 @@
+{% load custom_filters %}
+
+<div class="availability-entry row align-items-center mb-3" id="availability-entry-{{ counter }}">
+    <input type="hidden" name="form-{{ counter }}-id" id="id_form-{{ counter }}-id" value="{{ form.id.value }}">
+    <input type="hidden" name="form-{{ counter }}-tutor" id="id_form-{{ counter }}-tutor" value="{{ form.tutor.value }}">
+
+    <div class="col-sm-2">
+        <label for="id_form-{{ counter }}-day_of_week">Day of Week</label>
+        {{ form.day_of_week.errors }}
+        {{ form.day_of_week|add_class:"form-control" }}
+    </div>
+
+    <div class="col-sm-2">
+        <label for="id_form-{{ counter }}-start_time">Start Time</label>
+        {{ form.start_time.errors }}
+        {{ form.start_time|add_class:"form-control" }}
+    </div>
+
+    <div class="col-sm-2">
+        <label for="id_form-{{ counter }}-end_time">End Time</label>
+        {{ form.end_time.errors }}
+        {{ form.end_time|add_class:"form-control" }}
+    </div>
+
+    <div class="col-sm-2">
+        <label for="id_form-{{ counter }}-is_available">Is Available</label>
+        {{ form.is_available.errors }}
+        <select name="form-{{ counter }}-is_available" id="id_form-{{ counter }}-is_available" class="form-control" required>
+            <option value="true" {% if form.is_available.value == 'true' %}selected{% endif %}>Yes</option>
+            <option value="false" {% if form.is_available.value == 'false' %}selected{% endif %}>No</option>
+        </select>
+    </div>
+
+    <div class="col-sm-1 d-flex align-items-center">
+        <label for="id_form-{{ counter }}-DELETE" class="d-none">Delete</label>
+        <input type="checkbox" name="form-{{ counter }}-DELETE" id="id_form-{{ counter }}-DELETE" class="d-none">
+        <button type="button" class="btn btn-outline-danger ms-auto" onclick="removeAvailability({{ counter }})">
+            <i class="bi bi-trash"></i>
+        </button>
+    </div>
+</div>

@@ -1,28 +1,194 @@
-<!-- core/templates/core/base.html -->
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>{% block title %}Tutoring Platform{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <title>Tutoring Platform | {% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1 0 auto;
+            padding-top: 70px; /* Ensure enough padding to avoid overlap */
+        }
+
+        footer {
+            flex-shrink: 0;
+            background: #343a40;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+            background: #343a40;
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #fff;
+        }
+
+        .navbar .nav-link {
+            color: #adb5bd !important;
+            transition: color 0.3s;
+        }
+
+        .navbar .nav-link:hover {
+            color: #fff !important;
+        }
+
+        .navbar .dropdown-menu {
+            background: #343a40;
+            border: none;
+        }
+
+        .navbar .dropdown-item {
+            color: #adb5bd;
+        }
+
+        .navbar .dropdown-item:hover {
+            color: #fff;
+            background: transparent;
+        }
+
+        .messages .alert {
+            margin-top: 20px;
+        }
+
+        .img-thumbnail {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .container.content {
+            padding: 2rem 1rem;
+        }
+    </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Tutoring Platform</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
-            </ul>
+    <nav class="navbar navbar-expand-md navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'core:home' %}">Tutoring Platform</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <!-- Left-aligned links if any -->
+                </ul>
+                <!-- Advanced Research link in the center -->
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center" href="{% url 'core:advanced_research' %}">
+                            <i class="bi bi-search me-2"></i> Advanced Research
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:register' %}">Register</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="me-2">{{ user.username }}</span>
+                                <img class="rounded-circle img-thumbnail"
+                                     src="{% if user.profile.is_tutor and user.tutor.profile_picture %}
+                                          {{ user.tutor.profile_picture.url }}
+                                          {% elif user.profile.propic %}
+                                          {{ user.profile.propic.url }}
+                                          {% else %}
+                                          {% static 'unknown_user.png' %}
+                                          {% endif %}" alt="User Profile Picture">
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Profile</a></li>
+                                <li>
+                                    <form method="POST" action="{% url 'core:logout' %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </nav>
-    <div class="container mt-5">
-        {% block content %}
-        {% endblock %}
+
+    <div class="container content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
     </div>
+
+    <footer>
+        &copy; 2024 Tutoring Platform. All Rights Reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navbar = document.querySelector('.navbar');
+
+            function adjustBodyHeight() {
+                document.body.style.height = 'auto';
+                if (document.body.scrollHeight <= window.innerHeight) {
+                    document.body.style.height = '100vh';
+                }
+            }
+
+            window.addEventListener('resize', adjustBodyHeight);
+            window.addEventListener('scroll', adjustBodyHeight);
+
+            adjustBodyHeight();
+        });
+    </script>
 </body>
+
 </html>

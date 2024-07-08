@@ -1,0 +1,118 @@
+{% load static %}
+<div class="container tutor-results">
+    {% if tutors %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for tutor in tutors %}
+                <div class="col">
+                    <div class="card tutor-card h-100">
+                        <div class="row g-0 h-100">
+                            <div class="col-auto my-auto">
+                                <a href="{% url 'core:public_profile' tutor.id %}">
+                                    {% if tutor.profile_picture %}
+                                        <img src="{{ tutor.profile_picture.url }}" class="img-fluid rounded-circle tutor-image" alt="{{ tutor.get_full_name }}">
+                                    {% else %}
+                                        <img src="{% static 'unknown_user.png' %}" class="img-fluid rounded-circle tutor-image" alt="{{ tutor.get_full_name }}">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="col">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{% url 'core:public_profile' tutor.id %}">{{ tutor.get_full_name }}</a>
+                                    </h5>
+                                    <p class="card-text small">
+                                        <i class="bi bi-currency-dollar"></i> {{ tutor.hourly_rate }}<br>
+                                        <i class="bi bi-star"></i> {{ tutor.average_rating }} ({{ tutor.review_count }} reviews)<br>
+                                        <i class="bi bi-book"></i> {{ tutor.subjects.all|join:", " }}<br>
+                                        <i class="bi bi-geo-alt"></i> {{ tutor.user.profile.location }}<br>
+                                        <i class="bi bi-info-circle"></i> {{ tutor.bio|truncatewords:10 }}<br>
+                                        <i class="bi bi-briefcase"></i> {{ tutor.experience }} years
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="pagination mt-4">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No tutors match your search criteria.
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .tutor-results {
+        margin-top: 20px;
+    }
+    .tutor-card {
+        border: 1px solid #ddd;
+        border-radius: 15px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .tutor-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        margin: 10px;
+    }
+    .tutor-card .card-body {
+        padding: 10px;
+    }
+    .tutor-card .card-title {
+        font-size: 1em;
+        margin-bottom: 5px;
+    }
+    .tutor-card .card-title a {
+        text-decoration: none;
+        color: #007bff;
+    }
+    .tutor-card .card-title a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+    .tutor-card .card-text {
+        font-size: 0.9em;
+        color: #555;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .pagination .step-links {
+        display: flex;
+        gap: 10px;
+    }
+    .pagination .step-links a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    .pagination .step-links a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+    .pagination .step-links .current {
+        font-weight: bold;
+        color: #333;
+    }
+</style>

@@ -1,9 +1,44 @@
-<!-- core/templates/core/home.html -->
-{% extends 'core/base.html' %}
+<!-- core/templates/home.html -->
+{% extends "base_card.html" %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 
-{% block content %}
-<h1>Welcome to the Tutoring Platform</h1>
-<p>This is the home page.</p>
+{% block body %}
+    <div class="grid">
+        {% for tutor in top_tutors %}
+        <div class="tutor-card">
+            <div class="profile-pic mb-3">
+                <a href="{% url 'core:public_profile' tutor.user.id %}">
+                    {% if tutor.profile_picture %}
+                        <img id="profile-pic" src="{{ tutor.profile_picture.url }}" alt="Profile Picture">
+                    {% elif tutor.user.profile.propic %}
+                        <img id="profile-pic" src="{{ tutor.user.profile.propic.url }}" alt="Profile Picture">
+                    {% else %}
+                        <img id="profile-pic" src="{% static 'unknown_user.png' %}" alt="Unknown User">
+                    {% endif %}
+                </a>
+            </div>
+            <h5>
+                <a href="{% url 'core:public_profile' tutor.user.id %}">
+                    <i class="fas fa-user"></i> {{ tutor.user.get_full_name }}
+                </a>
+            </h5>
+            <p><i class="fas fa-user-tag"></i> <strong>Username:</strong> {{ tutor.user.username }}</p>
+            <p><i class="fas fa-info-circle"></i> <strong>Bio:</strong> {{ tutor.bio|truncatewords:20 }}</p>
+            <h5><i class="fas fa-book"></i> Subjects</h5>
+            <ul>
+                {% for subject in tutor.subjects.all %}
+                    <li><i class="fas fa-book-open"></i> {{ subject.name }}</li>
+                {% endfor %}
+            </ul>
+            <p><i class="fas fa-briefcase"></i> <strong>Experience:</strong> {{ tutor.experience }} years</p>
+            <p><i class="fas fa-dollar-sign"></i> <strong>Hourly Rate:</strong> ${{ tutor.hourly_rate }}</p>
+            <p><i class="fas fa-star"></i> <strong>Rating:</strong> {{ tutor.average_rating }}</p>
+            {% if not is_tutor %}
+            <a href="{% url 'core:book_lesson' tutor.id %}" class="btn"><i class="fas fa-envelope"></i> Book Lesson</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}

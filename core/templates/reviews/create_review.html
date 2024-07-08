@@ -1,0 +1,59 @@
+<!-- templates/reviews/create_review.html -->
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block title %}Write a Review{% endblock %}
+
+{% block header_content %}
+<div class="container my-4 pt-5">
+    <h1 class="text-center">Write a Review</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center pt-5">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+        <form id="writeReviewForm" method="post" action="{% url 'core:create_review' tutor_id=tutor.id lesson_id=lesson.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.rating|as_crispy_field }}
+            </div>
+            <div class="mb-3">
+                {{ form.comment|as_crispy_field }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+        </form>
+        <div id="form-messages" class="mt-3"></div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('#writeReviewForm').on('submit', function(event){
+        event.preventDefault();
+        var $form = $(this);
+        $.ajax({
+            type: 'POST',
+            url: $form.attr('action'),
+            data: $form.serialize(),
+            success: function(response){
+                $('#form-messages').html('<div class="alert alert-success">Your review has been submitted successfully.</div>');
+                $form[0].reset();
+            },
+            error: function(response){
+                var errors = JSON.parse(response.responseText).errors;
+                var errorMessages = '';
+                for (var field in errors) {
+                    errors[field].forEach(function(error) {
+                        errorMessages += '<div class="alert alert-danger">' + error.message + '</div>';
+                    });
+                }
+                $('#form-messages').html(errorMessages);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

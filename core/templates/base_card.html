@@ -1,10 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<!-- core/templates/base_card.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Default Title{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header, .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #1a73e8;
+            color: #fff;
+        }
+        .prebody {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1em;
+            color: #666;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+            margin-top: 70px;
+        }
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .tutor-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1 1 calc(33.333% - 15px);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+        }
+        .tutor-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .profile-pic {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .profile-pic img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .tutor-card h5 {
+            margin: 12px 0 6px;
+            font-size: 1.15em;
+            color: #1a73e8;
+        }
+        .tutor-card p, .tutor-card ul {
+            margin: 6px 0;
+            color: #555;
+            font-size: 0.9em;
+        }
+        .tutor-card ul {
+            padding-left: 20px;
+        }
+        .tutor-card .btn {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: not-allowed;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        .tutor-card .btn:hover {
+            background-color: #155ab3;
+        }
+        @media (max-width: 768px) {
+            .tutor-card {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block header %}
+<div class="header">
+    {% block header_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block prebody %}
+<div class="prebody">
+    {% block prebody_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% block body %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer">
+    {% block footer_content %}{% endblock %}
+</div>
+{% endblock %}

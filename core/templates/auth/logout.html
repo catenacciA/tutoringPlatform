@@ -1,4 +1,3 @@
-<!-- core/templates/registration/logged_out.html -->
 {% extends 'core/../base.html' %}
 
 {% block title %}Logged Out{% endblock %}
@@ -10,9 +9,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        background: inherit;
-        margin: 0;
+        padding-top: 70px;
+        padding-bottom: 30px;
     }
     .card {
         border: none;
@@ -61,7 +59,7 @@
             <p class="lead">Thank you for visiting our platform.</p>
             <hr class="my-4">
             <p>If you wish to log in again, click the button below.</p>
-            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Log in again</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'core:login' %}" role="button">Log in again</a>
         </div>
     </div>
 </div>

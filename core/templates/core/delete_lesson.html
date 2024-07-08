@@ -1,20 +1,24 @@
-<!-- templates/delete_lesson.html -->
-{% extends "base_card.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Cancel Lesson with {{ object.tutor.user.get_full_name }}{% endblock %}
 
 {% block header_content %}
-    <h1>Cancel Lesson with {{ object.tutor.user.get_full_name }}</h1>
+<div class="container my-4 pt-5">
+    <h1 class="text-center">Cancel Lesson with {{ object.tutor.user.get_full_name }}</h1>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <p>Are you sure you want to cancel this lesson?</p>
-    <form id="deleteLessonForm" method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Yes, Cancel Lesson</button>
-    </form>
+<div class="container d-flex justify-content-center pt-5">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+        <p class="text-center">Are you sure you want to cancel this lesson?</p>
+        <form id="deleteLessonForm" method="post" action="{% url 'core:delete_lesson' object.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100">Yes, Cancel Lesson</button>
+        </form>
+        <div id="form-messages" class="mt-3"></div>
+    </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -28,10 +32,30 @@ $(document).ready(function(){
             url: $form.attr('action'),
             data: $form.serialize(),
             success: function(response){
-                window.location.href = "{% url 'lessons_list' %}";
+                console.log('Success response:', response);
+                if (response.success) {
+                    $('#form-messages').html('<div class="alert alert-success">' + response.message + '</div>');
+                } else {
+                    $('#form-messages').html('<div class="alert alert-warning">' + response.message + '</div>');
+                }
+                setTimeout(function(){
+                    window.location.href = "{% url 'core:edit_profile' %}";
+                }, 5000); // Wait for 5 seconds before redirecting
             },
             error: function(response){
-                $('#form-messages').html('<p class="text-danger">There was an error cancelling the lesson.</p>');
+                console.log('Error response:', response);
+                var errors = response.responseJSON.errors;
+                var errorMessages = '';
+                for (var error in errors) {
+                    if (Array.isArray(errors[error])) {
+                        errors[error].forEach(err => {
+                            errorMessages += '<div class="alert alert-danger">' + err + '</div>';
+                        });
+                    } else {
+                        errorMessages += '<div class="alert alert-danger">' + errors[error] + '</div>';
+                    }
+                }
+                $('#form-messages').html(errorMessages);
             }
         });
     });
